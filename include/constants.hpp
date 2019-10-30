@@ -1,8 +1,9 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-#include <iostream>
+const unsigned long DEFAULT_BLOCK_SIZE = 1024 * 1024; // 1 MiB
 
-const size_t DEFAULT_CHUNK_SIZE = 1024 * 1024; // 1 MiB by default
+// CRC32 (4 bytes in ASCII 10 bytes num)
+const unsigned long HASH_LENGTH = 10;
 
 #endif // CONSTANTS_HPP

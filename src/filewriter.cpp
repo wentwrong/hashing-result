@@ -2,15 +2,20 @@
 
 FileWriter::FileWriter(std::string fn)
 {
-    ofs.open(fn, std::ofstream::out | std::ofstream::trunc);
+    fs.open(fn, std::ios::out | std::ios::trunc);
 
-    if(not ofs) {
-        std::cerr << "Can't create a file " << fn << std::endl;
+    if(not fs) {
+        std::cerr << "Can't create output file " << fn << std::endl;
         exit(1);
     }
 }
 
-void FileWriter::writeToFile(std::string content)
+void FileWriter::write_at(std::string hash_value, unsigned long offset)
 {
-    ofs << content;
+    std::lock_guard<std::mutex> locker(write_mutex);
+    if(not fs)
+        // !!!
+        return;
+    fs.seekp(long(offset));
+    fs << hash_value;
 }

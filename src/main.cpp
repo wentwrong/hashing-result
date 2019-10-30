@@ -1,30 +1,26 @@
-#include <iostream>
-#include <vector>
-#include <memory>
-
-#include <argparse.hpp>
+#include <argparser.hpp>
 #include <filereader.hpp>
 #include <filewriter.hpp>
-#include <ihasher.hpp>
-#include <crc32hasher.hpp>
+#include <threadpool.hpp>
 
 int main(int argc, char* argv[])
 {
-    ArgParse parser(argc, argv);
+    // Parsing input params
+    // (input filename, output filename, [optional block size])
+    ArgParser parser(argc, argv);
 
-    FileReader fr(parser.getInputFn(), parser.getChunkSize());
-    FileWriter fw(parser.getOutputFn());
+    // Thread-safe file reading/writing classes
+    std::unique_ptr<FileReader> fr(new FileReader(parser.get_input_fn()));
+    std::unique_ptr<FileWriter> fw(new FileWriter(parser.get_output_fn()));
 
-    std::unique_ptr<IHasher> hasher(new CRC32Hasher());
+    // Pool of threads (workers)
+    ThreadPool thrpool(fr.get(), fw.get(), parser.get_block_size());
 
-    std::unique_ptr<std::vector<char>> chunk;
+    // Running threads
+    thrpool.run();
 
-    do {
-        chunk = fr.nextChunk();
-        auto hash_value = hasher->getHash(reinterpret_cast<unsigned char*>(chunk->data()), chunk->size());
-        // std::cout << hash_value << std::endl;
-        fw.writeToFile(hash_value);
-    } while (!fr.isEof());
+    // Wait until all threads finish their work
+    thrpool.join_all();
 
     return 0;
 }
