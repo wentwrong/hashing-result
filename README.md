@@ -39,7 +39,7 @@ go build hr-go.go
 4. Записать в выходной файл по смещению.
 
 <center>
-![](https://i.imgur.com/UWIysyF.png)
+![Моя версия](/images/multithread-1.png)
 </center>
 </details>
 
@@ -50,7 +50,7 @@ go build hr-go.go
 3. Ещё один поток считывает данные из буфера с хэшами и записывает в выходной файл.
 
 <center>
-![](https://i.imgur.com/X4r3VeE.png)
+![Более архитектурно верное](/images/multithread-2.png)
 </center>
 </details>
 
